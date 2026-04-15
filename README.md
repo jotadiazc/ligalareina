@@ -1,6 +1,11 @@
 # Administrador de liga de fútbol (fixtures con reglas)
 
-Aplicación CLI en Python para administrar una liga por series y generar fixtures automáticos.
+Aplicación en Python para administrar una liga por series y generar fixtures automáticos.
+
+## Versiones disponibles
+
+- **CLI** (línea de comandos)
+- **Web local** (interfaz en navegador)
 
 ## Qué soporta
 
@@ -43,7 +48,7 @@ Días de semana:
 - `5` sábado
 - `6` domingo
 
-## Uso
+## Uso CLI
 
 ```bash
 python src/main.py \
@@ -54,11 +59,25 @@ python src/main.py \
   --output fixture_output.json
 ```
 
-> Si `Mapuches` no juega domingo (`6`), el generador intentará mover ese partido ±3 días. Si no puede, lo deja en domingo y agrega una nota de restricción forzada.
+## Uso versión web
+
+```bash
+python src/web_app.py
+```
+
+Luego abre en tu navegador: `http://127.0.0.1:8000`
+
+En la web puedes:
+
+- pegar/editar el JSON de la liga,
+- definir fecha inicial,
+- definir intervalo de rondas,
+- definir corrimiento máximo,
+- generar y ver el fixture en pantalla.
 
 ## Salida
 
-Un JSON con la lista de partidos:
+JSON con la lista de partidos:
 
 - `serie`
 - `round`
