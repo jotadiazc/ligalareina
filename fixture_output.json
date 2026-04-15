@@ -1,0 +1,94 @@
+{
+  "matches": [
+    {
+      "serie": "Serie A",
+      "round": 1,
+      "match": 1,
+      "home": "Mapuches",
+      "away": "Cóndores",
+      "date": "2026-04-18",
+      "forced_restriction": false,
+      "notes": []
+    },
+    {
+      "serie": "Serie A",
+      "round": 1,
+      "match": 2,
+      "home": "Tigres",
+      "away": "Halcones",
+      "date": "2026-04-19",
+      "forced_restriction": false,
+      "notes": []
+    },
+    {
+      "serie": "Serie B",
+      "round": 1,
+      "match": 1,
+      "home": "Guerreros",
+      "away": "Piratas",
+      "date": "2026-04-19",
+      "forced_restriction": false,
+      "notes": []
+    },
+    {
+      "serie": "Serie A",
+      "round": 2,
+      "match": 1,
+      "home": "Mapuches",
+      "away": "Tigres",
+      "date": "2026-04-25",
+      "forced_restriction": false,
+      "notes": []
+    },
+    {
+      "serie": "Serie A",
+      "round": 2,
+      "match": 2,
+      "home": "Halcones",
+      "away": "Cóndores",
+      "date": "2026-04-26",
+      "forced_restriction": false,
+      "notes": []
+    },
+    {
+      "serie": "Serie B",
+      "round": 2,
+      "match": 1,
+      "home": "Leones",
+      "away": "Guerreros",
+      "date": "2026-04-26",
+      "forced_restriction": false,
+      "notes": []
+    },
+    {
+      "serie": "Serie A",
+      "round": 3,
+      "match": 2,
+      "home": "Cóndores",
+      "away": "Tigres",
+      "date": "2026-05-03",
+      "forced_restriction": false,
+      "notes": []
+    },
+    {
+      "serie": "Serie B",
+      "round": 3,
+      "match": 1,
+      "home": "Leones",
+      "away": "Piratas",
+      "date": "2026-05-03",
+      "forced_restriction": false,
+      "notes": []
+    },
+    {
+      "serie": "Serie A",
+      "round": 3,
+      "match": 1,
+      "home": "Mapuches",
+      "away": "Halcones",
+      "date": "2026-05-04",
+      "forced_restriction": false,
+      "notes": []
+    }
+  ]
+}

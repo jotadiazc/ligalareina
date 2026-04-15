@@ -1,0 +1,42 @@
+{
+  "name": "Liga Municipal",
+  "series": [
+    {
+      "name": "Serie A",
+      "teams": [
+        {
+          "name": "Mapuches",
+          "rules": {
+            "no_play_weekdays": [6]
+          }
+        },
+        {
+          "name": "Halcones",
+          "rules": {
+            "no_play_weekdays": [5]
+          }
+        },
+        {
+          "name": "Tigres"
+        },
+        {
+          "name": "Cóndores"
+        }
+      ]
+    },
+    {
+      "name": "Serie B",
+      "teams": [
+        {
+          "name": "Leones"
+        },
+        {
+          "name": "Piratas"
+        },
+        {
+          "name": "Guerreros"
+        }
+      ]
+    }
+  ]
+}
