@@ -84,49 +84,210 @@ class FixtureWebHandler(BaseHTTPRequestHandler):
     ) -> str:
         payload = payload_str or json.dumps(DEFAULT_JSON, ensure_ascii=False, indent=2)
         start = start_date or date.today().isoformat()
+        table_html = self._render_result_table(result) if result else ""
+        summary_html = self._render_summary(result) if result else ""
 
         return f"""<!doctype html>
 <html lang=\"es\">
   <head>
     <meta charset=\"utf-8\" />
-    <title>Generador de Fixtures</title>
+    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />
+    <title>Panel Liga Reina</title>
     <style>
-      body {{ font-family: Arial, sans-serif; margin: 2rem; }}
-      textarea {{ width: 100%; min-height: 260px; font-family: monospace; }}
-      .grid {{ display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }}
-      .error {{ color: #b42318; font-weight: bold; }}
-      pre {{ background: #f5f5f5; padding: 1rem; overflow-x: auto; }}
-      label {{ display: block; margin-top: .6rem; }}
-      button {{ margin-top: 1rem; padding: .6rem 1rem; }}
+      :root {{
+        --bg: #0f172a;
+        --card: #111827;
+        --border: #24324d;
+        --muted: #94a3b8;
+        --text: #e2e8f0;
+        --accent: #22c55e;
+        --danger: #fda4af;
+      }}
+      * {{ box-sizing: border-box; }}
+      body {{
+        margin: 0;
+        font-family: Inter, Arial, sans-serif;
+        background: linear-gradient(180deg, #0f172a, #111827 30%);
+        color: var(--text);
+      }}
+      main {{ max-width: 1200px; margin: 0 auto; padding: 1.5rem; }}
+      .hero {{
+        border: 1px solid var(--border);
+        background: rgba(15, 23, 42, 0.8);
+        border-radius: 16px;
+        padding: 1.25rem;
+        margin-bottom: 1rem;
+      }}
+      .hero p {{ margin: .4rem 0 0; color: var(--muted); }}
+      .grid {{ display: grid; grid-template-columns: 1.2fr .8fr; gap: 1rem; }}
+      .panel {{
+        border: 1px solid var(--border);
+        background: var(--card);
+        border-radius: 16px;
+        padding: 1rem;
+      }}
+      textarea {{
+        width: 100%;
+        min-height: 420px;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: #0b1220;
+        color: var(--text);
+        padding: .75rem;
+      }}
+      input {{
+        width: 100%;
+        border-radius: 8px;
+        border: 1px solid var(--border);
+        background: #0b1220;
+        color: var(--text);
+        padding: .55rem .65rem;
+      }}
+      label {{ display: block; margin-top: .85rem; color: var(--muted); }}
+      button {{
+        margin-top: 1rem;
+        width: 100%;
+        border: 0;
+        border-radius: 10px;
+        background: linear-gradient(90deg, #22c55e, #16a34a);
+        color: white;
+        font-weight: 700;
+        padding: .72rem;
+        cursor: pointer;
+      }}
+      .error {{
+        color: var(--danger);
+        background: rgba(190, 24, 93, .1);
+        border: 1px solid rgba(190, 24, 93, .35);
+        padding: .75rem;
+        border-radius: 8px;
+      }}
+      .stats {{
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: .75rem;
+        margin-bottom: .8rem;
+      }}
+      .stat {{
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: .65rem;
+        background: #0b1220;
+      }}
+      .stat b {{ display: block; font-size: 1.1rem; }}
+      table {{
+        width: 100%;
+        border-collapse: collapse;
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        overflow: hidden;
+      }}
+      th, td {{
+        border-bottom: 1px solid var(--border);
+        padding: .6rem;
+        text-align: left;
+        font-size: .9rem;
+      }}
+      th {{ background: #0b1220; color: #cbd5e1; }}
+      pre {{
+        margin-top: .8rem;
+        background: #0b1220;
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: .8rem;
+        overflow-x: auto;
+      }}
+      @media (max-width: 900px) {{
+        .grid {{ grid-template-columns: 1fr; }}
+      }}
     </style>
   </head>
   <body>
-    <h1>Administrador de liga (versión web)</h1>
-    <p>Pega el JSON de la liga y genera el fixture automático con restricciones por equipo.</p>
-    <form method=\"post\">
-      <div class=\"grid\">
-        <div>
-          <label for=\"payload\">Liga (JSON)</label>
-          <textarea id=\"payload\" name=\"payload\">{html.escape(payload)}</textarea>
+    <main>
+      <section class=\"hero\">
+        <h1>Administrador de liga (versión web)</h1>
+        <p>Panel para visualizar y administrar campeonatos: equipos, rondas y fixture automático con reglas por equipo.</p>
+      </section>
+      <form method=\"post\">
+        <div class=\"grid\">
+          <section class=\"panel\">
+            <label for=\"payload\">Liga (JSON)</label>
+            <textarea id=\"payload\" name=\"payload\">{html.escape(payload)}</textarea>
+          </section>
+          <section class=\"panel\">
+            <h2>Configuración</h2>
+            <label for=\"start_date\">Fecha inicial (YYYY-MM-DD)</label>
+            <input id=\"start_date\" name=\"start_date\" value=\"{html.escape(start)}\" />
+
+            <label for=\"round_interval_days\">Días entre rondas</label>
+            <input id=\"round_interval_days\" name=\"round_interval_days\" type=\"number\" value=\"{round_interval_days}\" />
+
+            <label for=\"max_shift_days\">Máximo corrimiento (±días)</label>
+            <input id=\"max_shift_days\" name=\"max_shift_days\" type=\"number\" value=\"{max_shift_days}\" />
+
+            <button type=\"submit\">Generar fixture</button>
+          </section>
         </div>
-        <div>
-          <label for=\"start_date\">Fecha inicial (YYYY-MM-DD)</label>
-          <input id=\"start_date\" name=\"start_date\" value=\"{html.escape(start)}\" />
-
-          <label for=\"round_interval_days\">Días entre rondas</label>
-          <input id=\"round_interval_days\" name=\"round_interval_days\" type=\"number\" value=\"{round_interval_days}\" />
-
-          <label for=\"max_shift_days\">Máximo corrimiento (±días)</label>
-          <input id=\"max_shift_days\" name=\"max_shift_days\" type=\"number\" value=\"{max_shift_days}\" />
-
-          <button type=\"submit\">Generar fixture</button>
-        </div>
-      </div>
-    </form>
-    {f'<p class="error">Error: {html.escape(error)}</p>' if error else ''}
-    {f'<h2>Resultado</h2><pre>{html.escape(result)}</pre>' if result else ''}
+      </form>
+      {f'<p class="error">Error: {html.escape(error)}</p>' if error else ''}
+      {f'<section class="panel"><h2>Resumen</h2>{summary_html}</section>' if result else ''}
+      {f'<section class="panel"><h2>Partidos programados</h2>{table_html}<h3>JSON generado</h3><pre>{html.escape(result)}</pre></section>' if result else ''}
+    </main>
   </body>
 </html>"""
+
+    @staticmethod
+    def _render_result_table(result: str) -> str:
+        try:
+            rows = json.loads(result)
+        except json.JSONDecodeError:
+            return "<p>No se pudo procesar el resultado.</p>"
+
+        if not rows:
+            return "<p>No hay partidos generados.</p>"
+
+        body = "".join(
+            (
+                "<tr>"
+                f"<td>{html.escape(str(r.get('serie', '')))}</td>"
+                f"<td>{html.escape(str(r.get('round', '')))}</td>"
+                f"<td>{html.escape(str(r.get('match', '')))}</td>"
+                f"<td>{html.escape(str(r.get('home', '')))}</td>"
+                f"<td>{html.escape(str(r.get('away', '')))}</td>"
+                f"<td>{html.escape(str(r.get('date', '')))}</td>"
+                f"<td>{'Sí' if r.get('forced_restriction') else 'No'}</td>"
+                "</tr>"
+            )
+            for r in rows
+        )
+
+        return (
+            "<table><thead><tr>"
+            "<th>Serie</th><th>Ronda</th><th>Partido</th><th>Local</th><th>Visita</th><th>Fecha</th><th>Forzado</th>"
+            f"</tr></thead><tbody>{body}</tbody></table>"
+        )
+
+    @staticmethod
+    def _render_summary(result: str) -> str:
+        try:
+            rows = json.loads(result)
+        except json.JSONDecodeError:
+            return "<p>No disponible.</p>"
+
+        total_matches = len(rows)
+        forced_matches = sum(1 for row in rows if row.get("forced_restriction"))
+        series = {str(row.get("serie", "")) for row in rows}
+        unique_dates = {str(row.get("date", "")) for row in rows}
+
+        return (
+            "<div class='stats'>"
+            f"<article class='stat'><span>Total partidos</span><b>{total_matches}</b></article>"
+            f"<article class='stat'><span>Partidos forzados</span><b>{forced_matches}</b></article>"
+            f"<article class='stat'><span>Series activas</span><b>{len(series)}</b></article>"
+            f"<article class='stat'><span>Fechas con juego</span><b>{len(unique_dates)}</b></article>"
+            "</div>"
+        )
 
 
 def run_server(host: str = "127.0.0.1", port: int = 8000) -> None:
